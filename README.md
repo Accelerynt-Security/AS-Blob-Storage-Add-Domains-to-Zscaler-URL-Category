@@ -103,10 +103,12 @@ Hover over the **Administration** button and click on **URL Categories.**
 
 Take note of the name of your desired URL category, as it will be needed during deployment. 
 
+![Zscaler_URL_Category_1](Images/Zscaler_URL_Category_1.png)
+
 In the example below we use name of our Custom category AS_Blocklist. 
 This category in our test environment configured to a Zscaler access policy that disallows users access to any domain in in that list.
 
-![Zscaler_URL_Category_1](Images/Zscaler_URL_Category_1.png)
+![Zscaler_URL_Category_2](Images/Zscaler_URL_Category_2.png)
 
 
 #### Create Azure Key Vault Secrets:
