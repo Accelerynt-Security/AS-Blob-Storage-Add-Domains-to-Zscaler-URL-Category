@@ -23,6 +23,7 @@ The following items are required under the template settings during deployment:
 * A Zscaler [API key](https://github.com/Accelerynt-Security/AS-Blob-Storage-Add-Domains-to-Zscaler-URL-Category#zscaler-api-key)
 * The name of the [Zscaler custom URL category](https://github.com/Accelerynt-Security/AS-Blob-Storage-Add-Domains-to-Zscaler-URL-Category#zscaler-url-category) you wish to add the Microsoft Sentinel incident domains to
 * A Microsoft Azure [key vault secret](https://github.com/Accelerynt-Security/AS-Blob-Storage-Add-Domains-to-Zscaler-URL-Category#create-an-azure-key-vault-secret) containing your Okta API Token
+* A Microsoft Azure [integration account](https://github.com/Accelerynt-Security/AS-Blob-Storage-Add-Domains-to-Zscaler-URL-Category#create-an-integration-account)
 * A Microsoft Azure [blob storage file](https://github.com/Accelerynt-Security/AS-Blob-Storage-Add-Domains-to-Zscaler-URL-Category#create-azure-blob-storage-file)
 
 # 
@@ -129,6 +130,29 @@ Repeat this process for your Zscaler password.
 Once both secrets have been added to the vault, navigate to the "**Access policies**" menu option. Leave this page open, as you will need to return to it once the playbook has been deployed. See [Granting Access to Azure Key Vault](https://github.com/Accelerynt-Security/AS-Blob-Storage-Add-Domains-to-Zscaler-URL-Category#granting-access-to-azure-key-vault).
 
 ![Zscaler_Key_Vault_4](Images/Zscaler_Key_Vault_4.png)
+
+
+#### Create an Integration Account:
+
+You will need an integration account before this playbook can be deployed, as it is a requirement for executing JavaScript code, which is an operation used in the logic app.
+
+Navigate to the Azure integration accounts page: https://portal.azure.com/#view/HubsExtension/BrowseResource/resourceType/Microsoft.Logic%2FintegrationAccounts
+
+From the "**Overview**" page, select an existing integration account and take note of its name, or click "**Create**".
+
+![Zscaler_Integration_Account_1](Images/Zscaler_Integration_Account_1.png)
+
+Select the subscription and resource group that this playbook will be deployed to and a name for the integration account, such as "**AS-Zscaler-Integration**". Review the region and select a pricing tier, then click "**Review + create**".
+
+![Zscaler_Integration_Account_2](Images/Zscaler_Integration_Account_2.png)
+
+From the "**Review + create**" page, review the information, then click "**Create**".
+
+![Zscaler_Integration_Account_3](Images/Zscaler_Integration_Account_3.png)
+
+From the deployment page, take note of the resource name of your integration account, as it will be needed for deployment.
+
+![Zscaler_Integration_Account_4](Images/Zscaler_Integration_Account_4.png)
 
 
 #### Create Azure Blob Storage Container:
