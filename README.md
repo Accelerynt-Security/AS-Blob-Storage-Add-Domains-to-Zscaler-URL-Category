@@ -18,19 +18,27 @@ This playbook will use Azure blob storage to maintain a Zscaler custom URL categ
 
 The following items are required under the template settings during deployment: 
 
-* The URL of your Zscaler organization
+* The [root domain](https://github.com/Accelerynt-Security/AS-Blob-Storage-Add-Domains-to-Zscaler-URL-Category#zscaler-root-domain) of your Zscaler organization
 * A configured Zscaler [admin account](https://github.com/Accelerynt-Security/AS-Blob-Storage-Add-Domains-to-Zscaler-URL-Category#zscaler-admin-account)
 * A Zscaler [API key](https://github.com/Accelerynt-Security/AS-Blob-Storage-Add-Domains-to-Zscaler-URL-Category#zscaler-api-key)
 * The name of the [Zscaler custom URL category](https://github.com/Accelerynt-Security/AS-Blob-Storage-Add-Domains-to-Zscaler-URL-Category#zscaler-url-category) you wish to add the Microsoft Sentinel incident domains to
 * A Microsoft Azure [key vault secret](https://github.com/Accelerynt-Security/AS-Blob-Storage-Add-Domains-to-Zscaler-URL-Category#create-an-azure-key-vault-secret) containing your Okta API Token
- A Microsoft Azure [blob storage file](https://github.com/Accelerynt-Security/AS-Blob-Storage-Add-Domains-to-Zscaler-URL-Category#create-azure-blob-storage-file)
+* A Microsoft Azure [blob storage file](https://github.com/Accelerynt-Security/AS-Blob-Storage-Add-Domains-to-Zscaler-URL-Category#create-azure-blob-storage-file)
 
 # 
 ### Setup
 
+
+#### Zscaler Root Domain
+
+Navigate to https://www.zscaler.com/ and expand the dropdown list under "**Sign In**". The value you enter for the "**Zscaler Root Domain**" deployment parameter should exactly match the format of the options shown here. Select your appropriate domain and log in.
+
+![Zscaler_Root_Domain_1](Images/Zscaler_Root_Domain_1.png)
+
+
 #### Zscaler Admin Account:
 
-Before deployment, you will need to configure your Zscaler API roles and API admin account.  
+After logging into your account, you will need to configure your Zscaler API roles and API admin account.  
 
 For this Playbook to modify your Zscaler custom domain list, you will need a local Zscaler admin account that has access to the read and modify policy. To limit the access this account has to only what is needed, you will need to make a custom administrator role. 
 
@@ -106,7 +114,7 @@ You will need to add you Zscaler API key and Zscaler password to an Azure key va
 
 Navigate to the Azure key vaults page: https://portal.azure.com/#view/HubsExtension/BrowseResource/resourceType/Microsoft.KeyVault%2Fvaults
 
-Select an existing key vault or create a new one. From the key vault overview page, click the "**Secrets**" menu option, found under the "**Settings**" section. Click "**Generate/Import**".
+Select an existing key vault or create a new one. From the key vault overview page, click the "**Secrets**" menu option on the key vault page menu. Click "**Generate/Import**".
 
 ![Zscaler_Key_Vault_1](Images/Zscaler_Key_Vault_1.png)
 
@@ -118,7 +126,7 @@ Repeat this process for your Zscaler password.
 
 ![Zscaler_Key_Vault_3](Images/Zscaler_Key_Vault_3.png)
 
-Once both secrets have been added to the vault, navigate to the "**Access policies**" menu option, also found under the "**Settings**" section on the key vault page menu. Leave this page open, as you will need to return to it once the playbook has been deployed. See [Granting Access to Azure Key Vault](https://github.com/Accelerynt-Security/AS-Blob-Storage-Add-Domains-to-Zscaler-URL-Category#granting-access-to-azure-key-vault).
+Once both secrets have been added to the vault, navigate to the "**Access policies**" menu option. Leave this page open, as you will need to return to it once the playbook has been deployed. See [Granting Access to Azure Key Vault](https://github.com/Accelerynt-Security/AS-Blob-Storage-Add-Domains-to-Zscaler-URL-Category#granting-access-to-azure-key-vault).
 
 ![Zscaler_Key_Vault_4](Images/Zscaler_Key_Vault_4.png)
 
@@ -160,7 +168,7 @@ In the **Instance Details** section:
 
 * **IntegrationAccountName**: Enter the name of the Microsoft integration account this playbook will use. Please note that the playbook and integration account must share the same resource group.
 
-* **ZscalerURL**: Enter your Zscaler tenant URL here.
+* **Zscaler Root Domain**: Enter your Zscaler root domain here.
 
 * **Zscaler Username**:  Enter the username of the Zscaler Admin account. 
 
