@@ -9,7 +9,7 @@
         "entities": ["URL"], 
         "tags": ["Microsoft Sentinel", "Incident", "Zscaler", "URL Categories"], 
         "support": {
-            "tier": "developer"
+            "tier": "partner"
         },
         "author": {
             "name": "Accelerynt"
@@ -20,13 +20,7 @@
             "defaultValue": "AS-Blob-Storage-Add-Domains-to-Zscaler-URL-Category",
             "type": "string"
         },
-        "IntegrationAccountName": {
-            "type": "string",
-            "metadata": {
-                "description": "Enter the name of your Microsoft Integration Account"
-            }
-        },
-        "ZscalerURL": {
+        "ZscalerRootDomain": {
             "type": "string",
             "metadata": {
                 "description": "Enter the URL of your Zscaler org"
@@ -180,9 +174,7 @@
                                     "Succeeded"
                                 ]
                             },
-                            "metadata": {
-                                ""
-                            },
+                            "metadata": {},
                             "type": "ApiConnection",
                             "inputs": {
                                 "host": {
@@ -192,6 +184,7 @@
                                 },
                                 "method": "get",
                                 "path": ""
+                            }
                         },
                         "Initialize_variable-_Domain_Names": {
                             "runAfter": {
@@ -304,7 +297,7 @@
                                             "inputs": {
                                                 "cookie": "@body('Parse_JSON-_Authentication_Headers')?['Set-Cookie']",
                                                 "method": "POST",
-                                                "uri": "[concat(parameters('ZscalerURL'), '/api/v1/status/activate')]"
+                                                "uri": "[concat('https://', parameters('ZscalerRootDomain'), '/api/v1/status/activate')]"
                                             }
                                         },
                                         "HTTP-_Add_Blob_Domains": {
@@ -322,7 +315,7 @@
                                                 },
                                                 "cookie": "@body('Parse_JSON-_Authentication_Headers')?['Set-Cookie']",
                                                 "method": "PUT",
-                                                "uri": "[concat(parameters('ZscalerURL'), '/api/v1/urlCategories/@{variables(''URL Category Id'')}?action=ADD_TO_LIST')]"                                            }
+                                                "uri": "[concat('https://', parameters('ZscalerRootDomain'), '/api/v1/urlCategories/@{variables(''URL Category Id'')}?action=ADD_TO_LIST')]"                                            }
                                         },
                                         "HTTP_-_Get_existing_URLs": {
                                             "runAfter": {},
@@ -330,7 +323,7 @@
                                             "inputs": {
                                                 "cookie": "@body('Parse_JSON-_Authentication_Headers')?['Set-Cookie']",
                                                 "method": "GET",
-                                                "uri": "[concat(parameters('ZscalerURL'), '/api/v1/urlCategories/@{variables(''URL Category Id'')}')]"
+                                                "uri": "[concat('https://', parameters('ZscalerRootDomain'), '/api/v1/urlCategories/@{variables(''URL Category Id'')}')]"
                                             }
                                         },
                                         "HTTP_-_Remove_existing_urls": {
@@ -348,7 +341,7 @@
                                                 },
                                                 "cookie": "@body('Parse_JSON-_Authentication_Headers')?['Set-Cookie']",
                                                 "method": "PUT",
-                                                "uri": "[concat(parameters('ZscalerURL'), 'api/v1/urlCategories/@{variables(''URL Category Id'')}?action=REMOVE_FROM_LIST')]"                                            }
+                                                "uri": "[concat('https://', parameters('ZscalerRootDomain'), 'api/v1/urlCategories/@{variables(''URL Category Id'')}?action=REMOVE_FROM_LIST')]"                                            }
                                         }
                                     },
                                     "runAfter": {
@@ -731,9 +724,7 @@
                                             "Succeeded"
                                         ]
                                     },
-                                    "metadata": {
-                                        ""
-                                    },
+                                    "metadata": {},
                                     "type": "ApiConnection",
                                     "inputs": {
                                         "host": {
@@ -767,7 +758,7 @@
                                             "Content-Type": "application/json"
                                         },
                                         "method": "POST",
-                                        "uri": "[concat(parameters('ZscalerURL'), '/api/v1/authenticatedSession')]"
+                                        "uri": "[concat('https://', parameters('ZscalerRootDomain'), '/api/v1/authenticatedSession')]"
                                     }
                                 },
                                 "HTTP-_End_Session": {
@@ -784,7 +775,7 @@
                                             "Content-Type": "application/json"
                                         },
                                         "method": "DELETE",
-                                        "uri": "[concat(parameters('ZscalerURL'), '/api/v1/authenticatedSession')]"
+                                        "uri": "[concat('https://', parameters('ZscalerRootDomain'), '/api/v1/authenticatedSession')]"
                                     }
                                 },
                                 "HTTP-_Get_URLCategories": {
@@ -801,7 +792,7 @@
                                             "Content-Type": "application/json"
                                         },
                                         "method": "GET",
-                                        "uri": "https://admin.zscalerthree.net/api/v1/urlCategories?customOnly=true"
+                                        "uri": "[concat('https://', parameters('ZscalerRootDomain'), '/api/v1/urlCategories?customOnly=true')]"
                                     }
                                 },
                                 "Parse_JSON-_Authentication_Headers": {
