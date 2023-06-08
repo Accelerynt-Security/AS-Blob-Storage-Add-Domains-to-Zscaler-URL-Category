@@ -20,6 +20,12 @@
             "defaultValue": "AS-Blob-Storage-Add-Domains-to-Zscaler-URL-Category",
             "type": "string"
         },
+        "IntegrationAccountName": {
+            "type": "string",
+            "metadata": {
+                "description": "Enter the name of your Microsoft Integration Account"
+            }
+        },
         "ZscalerRootDomain": {
             "type": "string",
             "metadata": {
@@ -44,7 +50,7 @@
                 "description" : "Enter the name of the key vault that stores your Zscaler API key and Zscaler password"
             }
         },
-        "KeySecretName": {
+        "APIKeySecretName": {
             "type": "string",
             "metadata": {
                 "description": "Enter the name of the key vault Secret that contains the value of your Zscaler API key"
@@ -68,11 +74,9 @@
             "apiVersion": "2016-06-01",
             "name": "[variables('azureblob')]",
             "location": "[resourceGroup().location]",
-            "kind": "V1",
             "properties": {
                 "displayName": "[parameters('PlaybookName')]",
                 "customParameterValues": {},
-                "parameterValueType": "Alternative",
                 "api": {
                     "id": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Web/locations/', resourceGroup().location, '/managedApis/azureblob')]"
                 }
@@ -138,60 +142,8 @@
                         }
                     },
                     "actions": {
-                        "Get_Secret_API_Key": {
-                            "runAfter": {},
-                            "type": "ApiConnection",
-                            "inputs": {
-                                "host": {
-                                    "connection": {
-                                        "name": "@parameters('$connections')['keyvault']['connectionId']"
-                                    }
-                                },
-                                "method": "get",
-                                "path": "[concat('/secrets/@{encodeURIComponent(''', parameters('KeySecretName'), ''')}/value')]"
-                            }
-                        },
-                        "Get_Secret_-_Password": {
-                            "runAfter": {
-                                "Get_Secret_API_Key": [
-                                    "Succeeded"
-                                ]
-                            },
-                            "type": "ApiConnection",
-                            "inputs": {
-                                "host": {
-                                    "connection": {
-                                        "name": "@parameters('$connections')['keyvault']['connectionId']"
-                                    }
-                                },
-                                "method": "get",
-                                "path": "[concat('/secrets/@{encodeURIComponent(''', parameters('PasswordSecretName'), ''')}/value')]"
-                            }
-                        },
-                        "Get_Blob_Metadata_(V2)": {
-                            "runAfter": {
-                                "Get_Secret_-_Password": [
-                                    "Succeeded"
-                                ]
-                            },
-                            "metadata": {},
-                            "type": "ApiConnection",
-                            "inputs": {
-                                "host": {
-                                    "connection": {
-                                        "name": "@parameters('$connections')['azureblob']['connectionId']"
-                                    }
-                                },
-                                "method": "get",
-                                "path": ""
-                            }
-                        },
                         "Initialize_variable-_Domain_Names": {
-                            "runAfter": {
-                                "Get_Blob_Metadata_(V2)": [
-                                    "Succeeded"
-                                ]
-                            },
+                            "runAfter": {},
                             "type": "InitializeVariable",
                             "inputs": {
                                 "variables": [
@@ -429,7 +381,7 @@
                                     "type": "Foreach"
                                 },
                                 "For_each-_URLs": {
-                                    "foreach": "@split(trim(body('Get_blob_content_(V2)')), '\n')",
+                                    "foreach": "@split(trim('placeholder'), '\n')",
                                     "actions": {
                                         "Append_to_array_variable-_Domain_Names": {
                                             "runAfter": {
@@ -677,7 +629,7 @@
                                         }
                                     },
                                     "runAfter": {
-                                        "Get_blob_content_(V2)": [
+                                        "Get_Secret_API_Key": [
                                             "Succeeded"
                                         ]
                                     },
@@ -716,27 +668,6 @@
                                         },
                                         "method": "get",
                                         "path": "/secrets/@{encodeURIComponent('AS-Zscaler-Integration-API-Key')}/value"
-                                    }
-                                },
-                                "Get_blob_content_(V2)": {
-                                    "runAfter": {
-                                        "Get_Secret_API_Key": [
-                                            "Succeeded"
-                                        ]
-                                    },
-                                    "metadata": {},
-                                    "type": "ApiConnection",
-                                    "inputs": {
-                                        "host": {
-                                            "connection": {
-                                                "name": "@parameters('$connections')['azureblob']['connectionId']"
-                                            }
-                                        },
-                                        "method": "get",
-                                        "path": "",
-                                        "queries": {
-                                            "inferContentType": true
-                                        }
                                     }
                                 },
                                 "HTTP-_Authenticate": {
@@ -935,12 +866,7 @@
                             "azureblob": {
                                 "connectionId": "[resourceId('Microsoft.Web/connections', variables('azureblob'))]",
                                 "connectionName": "[variables('azureblob')]",
-                                "id": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Web/locations/', resourceGroup().location, '/managedApis/azureblob')]",
-                                "connectionProperties": {
-                                    "authentication": {
-                                        "type": "ManagedServiceIdentity"
-                                    }
-                                }
+                                "id": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Web/locations/', resourceGroup().location, '/managedApis/azureblob')]"
                             },
                             "keyvault": {
                                 "connectionId": "[resourceId('Microsoft.Web/connections', variables('keyvault'))]",
