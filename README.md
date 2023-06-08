@@ -192,15 +192,15 @@ In the **Instance Details** section:
                                                   
 * **Playbook Name**: This can be left as "**AS-Blob-Storage-Add-Domains-to-Zscaler-URL-Category**" or you may change it. 
 
-* **IntegrationAccountName**: Enter the name of the Microsoft integration account this playbook will use. Please note that the playbook and integration account must share the same resource group.
+* **Integration Account Name**: Enter the name of the Microsoft integration account this playbook will use. Please note that the playbook and integration account must share the same resource group.
 
 * **Zscaler Root Domain**: Enter your Zscaler root domain here.
 
-* **Zscaler Username**:  Enter the username of the Zscaler Admin account. 
+* **Zscaler Username**: Enter the username of the Zscaler Admin account. 
 
 * **Zscaler Custom URL Category Name**: Enter a Zscaler Custom URL Category Name. 
 
-* **Key Vault Name**:  Enter the name of the Key Vault that stores your Zscaler API key and Zscaler password. 
+* **Key Vault Name**: Enter the name of the Key Vault that stores your Zscaler API key and Zscaler password. 
 
 * **Zscaler API Key**: Enter the name of the Key Vault Secret that contains the value of your Zscaler API key. 
 
@@ -223,20 +223,40 @@ Click on the “**Edit**” button. This will bring us into the Logic Apps Desig
 
 ![Zscaler_Deploy_4](Images/Zscaler_Deploy_4.png)
 
-The first and fourth labeled "**Connections**" use a connection created during the deployment of this playbook. Before the playbook can be run, this connection will either need to be authorized in the indicated steps, or an existing authorized connection may be alternatively selected.  
+Before the logic app can run successfully, some additional steps will need to be added. Click the "**+**" directly below the trigger labeled "**Recurrence**" and select "**Add an action**".
 
 ![Zscaler_Deploy_5](Images/Zscaler_Deploy_5.png)
 
-To validate the connections created for this playbook, expand the "**Connections**" step and click the exclamation point icon next to the name matching the playbook.
+Paste "**Blob**" into the search bar, and click the "**Get Blob Metadata (V2)**" action for "**Azure Blob Storage**".
                                                                                                 
 ![Zscaler_Deploy_6](Images/Zscaler_Deploy_6.png)
 
-When prompted, sign in to validate the connection.                                                                                                
+You will be prompted to either create a connection to a storage container or select an existing one if it exists. Make sure the connection is for the storage container your Zscaler URL category values have been uploaded to. Next, click the file icon in the "**Blob**" field and select the folder containing your Zscaler URL categories file.
+
 ![Zscaler_Deploy_7](Images/Zscaler_Deploy_7.png)
 
-The same connection may need to be reselected for the fourth step. After a valid connection is established for the first two steps, click the "**Save**" button.
+After selecting the appropriate file, expand the ninth step labeled "**Condition**". Click in the input field with the placeholder "**Choose a value**" text. Select "**LastModified**" from the "**Dynamic content**" window.
 
 ![Zscaler_Deploy_8](Images/Zscaler_Deploy_8.png)
+
+An additional step must be added after the second step in the true branch. Click the "**+**" directly below the step labeled "**Get Secret API Key**" and select "**Add an action**".
+
+![Zscaler_Deploy_9](Images/Zscaler_Deploy_9.png)
+
+Paste "**Blob**" into the search bar, and click the "**Get blob content (V2)**" action for "**Azure Blob Storage**".
+
+![Zscaler_Deploy_10](Images/Zscaler_Deploy_10.png)
+
+As previously done, select the proper connection and file for your Zscaler URL categories.
+
+![Zscaler_Deploy_11](Images/Zscaler_Deploy_11.png)
+
+Lastly, expand the step directly below labeled "**For each- URLs**" and delete the function in the top field. In the dialogue box to the right, click the "**Expression**" tab and paste the following text in the input box: "**split(trim(body('Get_blob_content_(V2)')), '\n')**". Click "**Ok**".
+
+![Zscaler_Deploy_12](Images/Zscaler_Deploy_12.png)
+
+The logic app can now be saved and run successfully.
+
 
 #
 ### Granting Access to Azure Key Vault
