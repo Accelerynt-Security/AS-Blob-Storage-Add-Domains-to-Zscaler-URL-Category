@@ -255,7 +255,7 @@ Lastly, expand the step directly below labeled "**For each- URLs**" and delete t
 
 ![Zscaler_Deploy_12](Images/Zscaler_Deploy_12.png)
 
-Be sure to save the changes before exiting the logic app editor
+Be sure to save the changes before exiting the logic app editor.
 
 
 #
