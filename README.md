@@ -255,7 +255,7 @@ Lastly, expand the step directly below labeled "**For each- URLs**" and delete t
 
 ![Zscaler_Deploy_12](Images/Zscaler_Deploy_12.png)
 
-The logic app can now be saved and run successfully.
+Be sure to save the changes before exiting the logic app editor
 
 
 #
