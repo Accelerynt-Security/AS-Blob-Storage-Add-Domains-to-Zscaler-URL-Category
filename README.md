@@ -7,7 +7,8 @@ For any technical questions, please contact info@accelerynt.com
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAccelerynt-Security%2FAS-Blob-Storage-Add-Domains-to-Zscaler-URL-Category%2Fmaster%2Fazuredeploy.json)
 [![Deploy to Azure Gov](https://aka.ms/deploytoazuregovbutton)](https://portal.azure.us/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAccelerynt-Security%2FAS-Blob-Storage-Add-Domains-to-Zscaler-URL-Category%2Fmaster%2Fazuredeploy.json)    
 
-This playbook will use Azure blob storage to maintain a Zscaler custom URL category of your choice. If the azure blob storage is modified, the Zscaler URL category values will be updated to match.
+This playbook will use an Azure blob storage file to maintain a Zscaler custom URL category of your choice. The logic app is set to run every 5 minutes polling this blob storage file for changes. If any changes are made to the blob storage file, the Zscaler URL category values will be updated to match the file exactly. This will enable you to manage your Zscaler custom URL categories entirely from Microsoft Sentinel.
+Blob storage was opted for because unlike Microsoft Sentinel watchlists, the lastModified time attribute reflects changes to the contents of the file.
 
 ![Zscaler_Demo_1](Images/Zscaler_Demo_1.png)
 
@@ -169,13 +170,23 @@ Once your container has been created, you will need to upload a .csv file with t
 
 ![Zscaler_Blob_Storage_2](Images/Zscaler_Blob_Storage_2.png)
 
+You can easily view and edit the items in your file by clicking the ellipsis icon to the far right of the file and clicking "**View/edit**".
+
+![Zscaler_Blob_Storage_3](Images/Zscaler_Blob_Storage_3.png)
+
+Items can be added or removed on from the editable list. Once finished, click "**Save**".
+
+![Zscaler_Blob_Storage_4](Images/Zscaler_Blob_Storage_4.png)
+
+The logic app is set to run every 5 minutes polling this blob storage file for any changes. Because the logic app needs additional configuring after deployment, complete all deployment steps before testing any changes to this list, otherwise, time lapsed from now until then will likely put the last updated time outside of the polling window.
+
 
 #
 ### Deployment                                                                                                         
                                                                                                         
 To configure and deploy this playbook:
 
-Open your browser and ensure you are logged into your Microsoft Sentinel workspace. In a separate tab, open the link to our playbook on the Arbala Security GitHub Repository:
+Open your browser and ensure you are logged into your Microsoft Sentinel workspace. In a separate tab, open the link to our playbook on the Accelerynt GitHub Repository:
 
 https://github.com/Accelerynt-Security/AS-Blob-Storage-Add-Domains-to-Zscaler-URL-Category
 
@@ -251,7 +262,7 @@ As previously done, select the proper connection and file for your Zscaler URL c
 
 ![Zscaler_Deploy_11](Images/Zscaler_Deploy_11.png)
 
-Lastly, expand the step directly below labeled "**For each- URLs**" and delete the function in the top field. In the dialogue box to the right, click the "**Expression**" tab and paste the following text in the input box: "**split(trim(body('Get_blob_content_(V2)')), '\n')**". Click "**Ok**".
+Lastly, expand the step directly below labeled "**For each- URLs**" and click the function in the top field. In the dialogue box to the right, place your replace the two single quotes inside the **trim()**" function with the following: "**body('Get_blob_content_(V2)')**". Click "**Update**".
 
 ![Zscaler_Deploy_12](Images/Zscaler_Deploy_12.png)
 
