@@ -262,9 +262,13 @@ As previously done, select the proper connection and file for your Zscaler URL c
 
 ![Zscaler_Deploy_11](Images/Zscaler_Deploy_11.png)
 
-Lastly, expand the step directly below labeled "**For each- URLs**" and click the function in the top field. In the dialogue box to the right, place your replace the two single quotes inside the **trim()**" function with the following: "**body('Get_blob_content_(V2)')**". Click "**Update**".
+Next, expand the step directly below labeled "**For each- URLs**" and click the function in the top field. In the dialogue box to the right, place your replace the two single quotes inside the **trim()**" function with the following: "**body('Get_blob_content_(V2)')**". Click "**Update**".
 
 ![Zscaler_Deploy_12](Images/Zscaler_Deploy_12.png)
+
+Lastly, expand the step labeled "**Condition- URL parsing remove https protocol**". Click inside the input box and select "**Current item**" under "**For each - URLs**".
+
+![Zscaler_Deploy_13](Images/Zscaler_Deploy_13.png)
 
 Be sure to save the changes before exiting the logic app editor.
 
